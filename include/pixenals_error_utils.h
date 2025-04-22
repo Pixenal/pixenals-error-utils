@@ -19,12 +19,12 @@ typedef enum PixErr {
 #ifdef _DEBUG
 #define PIX_ERR_ASSERT(message, condition) \
 	if (!(condition)) \
-	printf("PX ERR ASSERT in %s, MESSAGE: %s\n", __func__, message); \
+	printf("PIX ASSERT in %s, MESSAGE: %s\n", __func__, message); \
 	assert(condition);
 #else
-#define PX_ERR_ASSERT(message, condition)\
+#define PIX_ERR_ASSERT(message, condition)\
 	if (!(condition)) \
-	printf("PX ERR ASSERT in %s, MESSAGE: %s\n", __func__, message); \
+	printf("PIX ASSERT in %s, MESSAGE: %s\n", __func__, message); \
 	assert(condition);
 #endif
 
@@ -38,7 +38,7 @@ void printError(
 	const char *pFunc
 ) {
 	char *isNotConditionStr = isNotCondition ? "false" : "true";
-	printf("PX ERR ERROR THROWN IN %s, IDX: %d, CODE: %d, CONDITION (%s) WAS %s, MESSAGE: %s\n",
+	printf("PIX ERROR THROWN IN %s, IDX: %d, CODE: %d, CONDITION (%s) WAS %s, MESSAGE: %s\n",
 		pFunc,
 		idx,
 		err,
@@ -48,7 +48,7 @@ void printError(
 	);
 }
 
-#define PIX_ERR_REPORT(message) printf("PX ERR REPORT IN %s, MESSAGE: %s\n", __func__, message)
+#define PIX_ERR_REPORT(message) printf("PIX REPORT IN %s, MESSAGE: %s\n", __func__, message)
 
 //TODO add ifdef for putting assert inside PIX_ERR_THROW macros for debug builds,
 // or if specified with a define
