@@ -7,6 +7,7 @@ SPDX-License-Identifier: Apache-2.0
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <stdbool.h>
 
 typedef enum PixErr {
