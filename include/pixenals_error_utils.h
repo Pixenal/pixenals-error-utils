@@ -30,6 +30,22 @@ typedef enum PixErr {
 #endif
 
 static inline
+void printWarn(
+	bool isNotCondition,
+	const char *pCondition,
+	const char *pMessage,
+	const char *pFunc
+) {
+	char *isNotConditionStr = isNotCondition ? "false" : "true";
+	printf("PIX WARNING IN %s, CONDITION (%s) WAS %s, MESSAGE: %s\n",
+		pFunc,
+		pCondition,
+		isNotConditionStr,
+		pMessage
+	);
+}
+
+static inline
 void printError(
 	PixErr err,
 	int32_t idx,
@@ -50,6 +66,14 @@ void printError(
 }
 
 #define PIX_ERR_REPORT(message) printf("PIX REPORT IN %s, MESSAGE: %s\n", __func__, message)
+
+#define PIX_ERR_WARN_IFNOT_COND(condition, message)\
+{\
+	bool isNotCondition = !(condition);\
+	if (isNotCondition) { \
+		printWarn(isNotCondition, #condition, #message, __func__);\
+	}\
+}
 
 //TODO add ifdef for putting assert inside PIX_ERR_THROW macros for debug builds,
 // or if specified with a define
