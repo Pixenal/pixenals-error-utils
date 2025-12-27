@@ -14,7 +14,9 @@ typedef enum PixErr {
 	PIX_ERR_NOT_SET,
 	PIX_ERR_SUCCESS,
 	PIX_ERR_ERROR,
-	PIX_ERR_QUIET
+	PIX_ERR_QUIET,
+	PIX_ERR_IO,
+	PIX_ERR_DEP
 } PixErr;
 
 #ifdef _DEBUG
@@ -80,9 +82,11 @@ void printError(
 #define PIX_ERR_THROW_IFNOT_COND(err, condition, message, idx) \
 {\
 	bool isNotCondition = !(condition);\
-	if (err != PIX_ERR_SUCCESS || isNotCondition) { \
-		printError(err, idx, isNotCondition, #condition, #message, __func__);\
+	if (isNotCondition) {\
 		err = PIX_ERR_ERROR;\
+	}\
+	if (err != PIX_ERR_SUCCESS) { \
+		printError(err, idx, isNotCondition, #condition, #message, __func__);\
 		goto handle_error_##idx; \
 	}\
 }
@@ -90,25 +94,25 @@ void printError(
 #define PIX_ERR_THROW_IFNOT(err, message, idx)\
 	if (err != PIX_ERR_SUCCESS) { \
 		printError(err, idx, true, "'N/A'", #message, __func__);\
-		err = PIX_ERR_ERROR;\
 		goto handle_error_##idx; \
 	}
 
 #define PIX_ERR_RETURN_IFNOT_COND(err, condition, message)\
 {\
 	bool isNotCondition = !(condition);\
-	if (err != PIX_ERR_SUCCESS || isNotCondition) { \
-		printError(err, -1, isNotCondition, #condition, #message, __func__);\
+	if (isNotCondition) {\
 		err = PIX_ERR_ERROR;\
+	}\
+	if (err != PIX_ERR_SUCCESS) { \
+		printError(err, -1, isNotCondition, #condition, #message, __func__);\
 		return err;\
 	}\
 }
 
 #define PIX_ERR_RETURN_QUIET_IFNOT_COND(err, condition, message)\
 {\
-	bool isNotCondition = !(condition);\
-	if (err != PIX_ERR_SUCCESS || isNotCondition) { \
-		err = PX_ERR_ERROR_QUIET;\
+	if (err != PIX_ERR_SUCCESS || !(condition)) { \
+		err = PIX_ERR_QUIET;\
 		return err;\
 	}\
 }
@@ -116,7 +120,6 @@ void printError(
 #define PIX_ERR_RETURN_IFNOT(err, message)\
 	if (err != PIX_ERR_SUCCESS) { \
 		printError(err, -1, true, "'N/A'", #message, __func__);\
-		err = PIX_ERR_ERROR;\
 		return err;\
 	}
 
@@ -141,3 +144,8 @@ void printError(
 		cleanup \
 	}\
 }
+
+#define PIX_ERR_SPECIFY(err, type) \
+	if (err != PIX_ERR_SUCCESS && err != PIX_ERR_NOT_SET) {\
+		err = type;\
+	}
