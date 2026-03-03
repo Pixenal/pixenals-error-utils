@@ -124,7 +124,7 @@ void printError(
 	}
 
 #define PIX_ERR_THROW(err, message, idx) \
-	printf("PX ERR ERROR THROWN IN %s, IDX: %d, MESSAGE: %s\n",\
+	printf("PIX ERR ERROR THROWN IN %s, IDX: %d, MESSAGE: %s\n",\
 		__func__,\
 		idx,\
 		message); \
@@ -132,7 +132,7 @@ void printError(
 	goto handle_error_##idx;
 
 #define PIX_ERR_RETURN(err, message) \
-	printf("PX ERR ERROR THROWN IN %s, MESSAGE: %s\n",\
+	printf("PIX ERR ERROR THROWN IN %s, MESSAGE: %s\n",\
 		__func__,\
 		 message); \
 	err = PIX_ERR_ERROR;\
