@@ -19,27 +19,36 @@ typedef enum PixErr {
 	PIX_ERR_DEP
 } PixErr;
 
+static const char *pixErrAssertStr = "PIX ASSERT in %s, MESSAGE: %s\n";
+static const char *pixErrThrowStr = "PIX ERR ERROR THROWN IN %s, IDX: %d, MESSAGE: %s\n";
+static const char *pixErrRetStr = "PIX ERR ERROR THROWN IN %s, MESSAGE: %s\n";
+static const char *pixErrErrStr =
+	"PIX ERROR THROWN IN %s, IDX: %d, CODE: %d, CONDITION (%s) WAS %s, MESSAGE: %s\n";
+static
+const char *pixErrWarnStr = "PIX WARNING IN %s, CONDITION (%s) WAS %s, MESSAGE: %s\n";
+static const char *pixErrReportStr = "PIX REPORT IN %s, MESSAGE: %s\n";
+
 #ifdef _DEBUG
 #define PIX_ERR_ASSERT(message, condition) \
 	if (!(condition)) \
-	printf("PIX ASSERT in %s, MESSAGE: %s\n", __func__, message); \
+	printf(pixErrAssertStr, __func__, message); \
 	assert(condition);
 #else
 #define PIX_ERR_ASSERT(message, condition)\
 	if (!(condition)) \
-	printf("PIX ASSERT in %s, MESSAGE: %s\n", __func__, message); \
+	printf(pixErrAssertStr, __func__, message); \
 	assert(condition);
 #endif
 
 static inline
-void printWarn(
+void pixerrPrintWarn(
 	bool isNotCondition,
 	const char *pCondition,
 	const char *pMessage,
 	const char *pFunc
 ) {
 	char *isNotConditionStr = isNotCondition ? "false" : "true";
-	printf("PIX WARNING IN %s, CONDITION (%s) WAS %s, MESSAGE: %s\n",
+	printf(pixErrWarnStr,
 		pFunc,
 		pCondition,
 		isNotConditionStr,
@@ -48,7 +57,7 @@ void printWarn(
 }
 
 static inline
-void printError(
+void pixerrPrintError(
 	PixErr err,
 	int32_t idx,
 	bool isNotCondition,
@@ -57,7 +66,7 @@ void printError(
 	const char *pFunc
 ) {
 	char *isNotConditionStr = isNotCondition ? "false" : "true";
-	printf("PIX ERROR THROWN IN %s, IDX: %d, CODE: %d, CONDITION (%s) WAS %s, MESSAGE: %s\n",
+	printf(pixErrErrStr,
 		pFunc,
 		idx,
 		err,
@@ -67,13 +76,13 @@ void printError(
 	);
 }
 
-#define PIX_ERR_REPORT(message) printf("PIX REPORT IN %s, MESSAGE: %s\n", __func__, message)
+#define PIX_ERR_REPORT(message) printf(pixErrReportStr, __func__, message)
 
 #define PIX_ERR_WARN_IFNOT_COND(condition, message)\
 {\
 	bool isNotCondition = !(condition);\
 	if (isNotCondition) { \
-		printWarn(isNotCondition, #condition, #message, __func__);\
+		pixerrPrintWarn(isNotCondition, #condition, #message, __func__);\
 	}\
 }
 
@@ -86,14 +95,14 @@ void printError(
 		err = PIX_ERR_ERROR;\
 	}\
 	if (err != PIX_ERR_SUCCESS) { \
-		printError(err, idx, isNotCondition, #condition, #message, __func__);\
+		pixerrPrintError(err, idx, isNotCondition, #condition, #message, __func__);\
 		goto handle_error_##idx; \
 	}\
 }
 
 #define PIX_ERR_THROW_IFNOT(err, message, idx)\
 	if (err != PIX_ERR_SUCCESS) { \
-		printError(err, idx, true, "'N/A'", #message, __func__);\
+		pixerrPrintError(err, idx, true, "'N/A'", #message, __func__);\
 		goto handle_error_##idx; \
 	}
 
@@ -104,7 +113,7 @@ void printError(
 		err = PIX_ERR_ERROR;\
 	}\
 	if (err != PIX_ERR_SUCCESS) { \
-		printError(err, -1, isNotCondition, #condition, #message, __func__);\
+		pixerrPrintError(err, -1, isNotCondition, #condition, #message, __func__);\
 		return err;\
 	}\
 }
@@ -119,22 +128,17 @@ void printError(
 
 #define PIX_ERR_RETURN_IFNOT(err, message)\
 	if (err != PIX_ERR_SUCCESS) { \
-		printError(err, -1, true, "'N/A'", #message, __func__);\
+		pixerrPrintError(err, -1, true, "'N/A'", #message, __func__);\
 		return err;\
 	}
 
 #define PIX_ERR_THROW(err, message, idx) \
-	printf("PIX ERR ERROR THROWN IN %s, IDX: %d, MESSAGE: %s\n",\
-		__func__,\
-		idx,\
-		message); \
+	printf(pixErrThrowStr, __func__, idx, message); \
 	err = PIX_ERR_ERROR;\
 	goto handle_error_##idx;
 
 #define PIX_ERR_RETURN(err, message) \
-	printf("PIX ERR ERROR THROWN IN %s, MESSAGE: %s\n",\
-		__func__,\
-		 message); \
+	printf(pixErrRetStr, __func__, message); \
 	err = PIX_ERR_ERROR;\
 	return err;
 
