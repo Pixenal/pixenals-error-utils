@@ -65,6 +65,9 @@ void pixerrPrintError(
 	const char *pMessage,
 	const char *pFunc
 ) {
+	if (err == PIX_ERR_QUIET) {
+		return;
+	}
 	char *isNotConditionStr = isNotCondition ? "false" : "true";
 	printf(pixErrErrStr,
 		pFunc,
