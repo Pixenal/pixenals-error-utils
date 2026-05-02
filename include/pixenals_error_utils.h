@@ -19,6 +19,10 @@ typedef enum PixErr {
 	PIX_ERR_DEP
 } PixErr;
 
+#ifndef WIN32
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#endif
 static const char *pixErrAssertStr = "PIX ASSERT in %s, MESSAGE: %s\n";
 static const char *pixErrThrowStr = "PIX ERR ERROR THROWN IN %s, IDX: %d, MESSAGE: %s\n";
 static const char *pixErrRetStr = "PIX ERR ERROR THROWN IN %s, MESSAGE: %s\n";
@@ -27,6 +31,9 @@ static const char *pixErrErrStr =
 static
 const char *pixErrWarnStr = "PIX WARNING IN %s, CONDITION (%s) WAS %s, MESSAGE: %s\n";
 static const char *pixErrReportStr = "PIX REPORT IN %s, MESSAGE: %s\n";
+#ifndef WIN32
+#pragma GCC diagnostic pop
+#endif
 
 #ifdef _DEBUG
 #define PIX_ERR_ASSERT(message, condition) \
