@@ -88,6 +88,8 @@ void pixerrPrintError(
 
 #define PIX_ERR_REPORT(message) printf(pixErrReportStr, __func__, message)
 
+//TODO maybe rename IFNOT_COND to like _NOTCOND or something shorter?
+//these macro names are long
 #define PIX_ERR_WARN_IFNOT_COND(condition, message)\
 {\
 	bool isNotCondition = !(condition);\
