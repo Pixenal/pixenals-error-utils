@@ -4,11 +4,19 @@ SPDX-License-Identifier: Apache-2.0
 */
 
 #pragma once
+#ifdef __cplusplus
+#include <cassert>
+#include <cstdio>
+#include <cstdlib>
+#include <cstdint>
+#include <cstdbool>
+#else
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
+#endif
 
 typedef enum PixErr {
 	PIX_ERR_NOT_SET,
