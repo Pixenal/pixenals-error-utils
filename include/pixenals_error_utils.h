@@ -43,18 +43,6 @@ static const char *pixErrReportStr = "PIX REPORT IN %s, MESSAGE: %s\n";
 #pragma GCC diagnostic pop
 #endif
 
-#ifdef _DEBUG
-#define PIX_ERR_ASSERT(message, condition) \
-	if (!(condition)) \
-	printf(pixErrAssertStr, __func__, message); \
-	assert(condition);
-#else
-#define PIX_ERR_ASSERT(message, condition)\
-	if (!(condition)) \
-	printf(pixErrAssertStr, __func__, message); \
-	assert(condition);
-#endif
-
 static inline
 void pixerrPrintWarn(
 	bool isNotCondition,
@@ -93,6 +81,21 @@ void pixerrPrintError(
 		pMessage
 	);
 }
+
+static inline
+void pixerrAssert(
+	bool condition,
+	const char *pMessage,
+	const char *pFunc
+) {
+	printf(pixErrAssertStr, pFunc, pMessage); \
+	assert(condition);\
+}
+
+#define PIX_ERR_ASSERT(message, condition) \
+	if (!(condition)) {\
+		pixerrAssert(condition, __func__, message);\
+	}
 
 #define PIX_ERR_REPORT(message) printf(pixErrReportStr, __func__, message)
 
